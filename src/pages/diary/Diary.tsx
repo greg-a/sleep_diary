@@ -12,30 +12,38 @@ function uuidv4() {
   );
 }
 
-const defaultNewEntry = {
-  text: "",
-  date: new Date(),
-  id: "",
+const getDefaultNewEntry = (date?: Date): Entry => {
+  const currentDatetime = date ?? new Date();
+  return {
+    text: "",
+    startTime: currentDatetime,
+    endTime: currentDatetime,
+    id: "",
+  };
 };
 
-function formatDate(date: Date) {
+function formatDate(d: Date) {
+  const date = new Date(d);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hour}:${minute}:00`;
 }
 
 export const Diary = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [newEntry, setNewEntry] = useState<Entry>(defaultNewEntry);
+  const [newEntry, setNewEntry] = useState<Entry>(getDefaultNewEntry());
+
   const submitEntry = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const newEntryTr = newEntry?.text.trim() ?? "";
     if (e.key === "Enter" && newEntryTr.length > 0) {
       setEntries((prev) => [
         ...prev,
-        { text: newEntryTr, date: newEntry.date, id: uuidv4() },
+        { text: newEntryTr, startTime: newEntry.startTime, id: uuidv4() },
       ]);
-      setNewEntry({ ...defaultNewEntry, date: newEntry.date });
+      setNewEntry(getDefaultNewEntry(newEntry.startTime));
     }
   };
 
@@ -44,13 +52,7 @@ export const Diary = () => {
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = new Date(newEntry.date);
-    const [year, month, day] = e.target.value.split("-");
-    newDate.setFullYear(Number(year));
-    newDate.setMonth(Number(month) - 1);
-    newDate.setDate(Number(day));
-
-    setNewEntry((prev) => ({ ...prev, date: newDate }));
+    setNewEntry((prev) => ({ ...prev, [e.target.id]: new Date(e.target.value) }));
   };
   return (
     <>
@@ -64,9 +66,17 @@ export const Diary = () => {
           autoFocus
         />
         <Input
-          label="Date"
-          type="date"
-          value={formatDate(newEntry.date)}
+          label="Start Time"
+          name="startTime"
+          type="datetime-local"
+          value={formatDate(newEntry.startTime)}
+          onChange={handleDateChange}
+        />
+        <Input
+          label="End Time"
+          name="endTime"
+          type="datetime-local"
+          value={formatDate(newEntry.endTime ?? newEntry.startTime)}
           onChange={handleDateChange}
         />
       </div>

@@ -1,5 +1,6 @@
 export interface Entry {
-  date: Date;
+  startTime: Date;
+  endTime?: Date;
   text: string;
   id: number | string;
 }
@@ -11,8 +12,8 @@ interface Props {
 export const EntryList = ({ entries }: Props) => {
   return (
     <ul>
-      {entries.map(({text, date, id}) => (
-        <li key={id}>{date.toLocaleDateString()} - {text}</li>
+      {entries.map(({text, startTime, id}) => (
+        <li key={id}>{startTime.toLocaleDateString()} - {text}</li>
       ))}
     </ul>
   );
