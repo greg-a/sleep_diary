@@ -20,7 +20,6 @@ export const initDB = (): Promise<boolean> => {
 
       // if the data object store doesn't exist, create it
       if (!db.objectStoreNames.contains(Stores.Entries)) {
-        console.log("Creating users store");
         db?.createObjectStore(Stores.Entries, { keyPath: "id" });
       }
       db.close();
@@ -28,10 +27,8 @@ export const initDB = (): Promise<boolean> => {
     };
 
     request.onsuccess = () => {
-      console.log({ db, request });
       db = request.result;
       version = db!.version;
-      console.log("request.onsuccess - initDB", version);
       db.close();
       resolve(true);
     };
@@ -48,23 +45,12 @@ export const addEntry = (data: Entry): Promise<Entry | string | null> => {
     const request = indexedDB.open(dbName, version);
 
     request.onsuccess = () => {
-      console.log("request.onsuccess - addData", data);
       db = request.result;
       const tx = db.transaction(Stores.Entries, "readwrite");
       const store = tx.objectStore(Stores.Entries);
       store.add(data);
       db.close();
       resolve(data);
-    };
-
-    request.onerror = () => {
-      const error = request.error?.message;
-      if (error) {
-        resolve(error);
-      } else {
-        resolve("Unknown error");
-      }
-      db.close();
     };
   });
 };
@@ -75,7 +61,6 @@ export const getAllEntries = (): Promise<Entry[]> => {
     const request = indexedDB.open(dbName);
 
     request.onsuccess = () => {
-      console.log("request.onsuccess - getAllData");
       db = request.result;
       const tx = db.transaction(Stores.Entries, "readonly");
       const store = tx.objectStore(Stores.Entries);
@@ -87,3 +72,32 @@ export const getAllEntries = (): Promise<Entry[]> => {
     };
   });
 };
+
+
+
+export const deleteEntry = (key: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    // again open the connection
+    let db: IDBDatabase;
+    const request = indexedDB.open(dbName, version);
+
+    request.onsuccess = () => {
+      db = request.result;
+      const tx = db.transaction(Stores.Entries, 'readwrite');
+      const store = tx.objectStore(Stores.Entries);
+      const res = store.delete(key);
+
+      // add listeners that will resolve the Promise
+      res.onsuccess = () => {
+        resolve(true);
+      };
+      res.onerror = () => {
+        resolve(false);
+      }
+      db.close();
+    };
+  });
+};
+
+
+

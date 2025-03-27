@@ -62,11 +62,15 @@ export const Diary = () => {
     }));
   };
 
+  const handleDeleteEntry = (entryId: string) => {
+    setEntries(prev => prev.filter(e => e.id !== entryId))
+  }
+
   useEffect(() => {
     (async () => {
       const entries = await getAllEntries();
-      setEntries(entries)
-    })()
+      setEntries(entries);
+    })();
   }, []);
   return (
     <>
@@ -94,7 +98,7 @@ export const Diary = () => {
           onChange={handleDateChange}
         />
       </div>
-      <EntryList entries={entries} />
+      <EntryList entries={entries} onDelete={handleDeleteEntry} />
     </>
   );
 };
