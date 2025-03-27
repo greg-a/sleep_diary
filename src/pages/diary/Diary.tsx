@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./diary.css";
 import { Input } from "../../components/input/input";
 import { Entry, EntryList } from "./entry/EntryList";
+import { addEntry, getAllEntries } from "../../db/entries";
 
 function uuidv4() {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
@@ -36,13 +37,16 @@ export const Diary = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [newEntry, setNewEntry] = useState<Entry>(getDefaultNewEntry());
 
-  const submitEntry = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const newEntryTr = newEntry?.text.trim() ?? "";
-    if (e.key === "Enter" && newEntryTr.length > 0) {
-      setEntries((prev) => [
-        ...prev,
-        { text: newEntryTr, startTime: newEntry.startTime, id: uuidv4() },
-      ]);
+  const submitEntry = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const descriptionTxt = newEntry?.text.trim() ?? "";
+    if (e.key === "Enter" && descriptionTxt.length > 0) {
+      const newEnt = {
+        text: descriptionTxt,
+        startTime: newEntry.startTime,
+        id: uuidv4(),
+      };
+      setEntries((prev) => [...prev, newEnt]);
+      await addEntry(newEnt);
       setNewEntry(getDefaultNewEntry(newEntry.startTime));
     }
   };
@@ -52,8 +56,18 @@ export const Diary = () => {
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewEntry((prev) => ({ ...prev, [e.target.id]: new Date(e.target.value) }));
+    setNewEntry((prev) => ({
+      ...prev,
+      [e.target.id]: new Date(e.target.value),
+    }));
   };
+
+  useEffect(() => {
+    (async () => {
+      const entries = await getAllEntries();
+      setEntries(entries)
+    })()
+  }, []);
   return (
     <>
       <h1>Sleep Diary</h1>
