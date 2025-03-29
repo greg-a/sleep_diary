@@ -1,0 +1,14 @@
+table {
+  width: 100%;
+
+  tbody {
+    tr:hover td {
+      opacity: 0.5;
+    }
+    td {
+      button {
+        padding: 0.25rem 0.7rem;
+      }
+    }
+  }
+}

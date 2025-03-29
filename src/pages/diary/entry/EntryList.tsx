@@ -1,4 +1,5 @@
 import DeleteIcon from "../../../assets/delete-svgrepo-com.svg";
+import { Table } from "../../../components/table/Table";
 import { deleteEntry } from "../../../db/entries";
 
 export interface Entry {
@@ -22,20 +23,20 @@ export const EntryList = ({ entries, onDelete }: Props) => {
   };
 
   return (
-    <ul style={{padding: 0}}>
-      {entries.map(({ text, startTime, id }) => (
-        <li
-          key={id}
-          style={{ display: "flex", justifyContent: "space-between" }}
-        >
-          <span>
-            {startTime.toLocaleString()} - {text}
-          </span>
-          <button style={{ padding: 0 }} onClick={() => handleDelete(id)}>
-            <img src={DeleteIcon} height={24} width={24} />
-          </button>
-        </li>
-      ))}
-    </ul>
+    <Table
+      columns={[
+        { header: "Note", field: "text" },
+        { header: "Start", field: "startTime" },
+        { header: "End", field: "endTime" },
+        {
+          header: "",
+          field: "",
+          body: (entry: Entry) => (
+            <button onClick={() => handleDelete(entry.id)}>Delete</button>
+          ),
+        },
+      ]}
+      data={entries}
+    />
   );
 };

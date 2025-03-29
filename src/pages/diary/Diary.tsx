@@ -43,6 +43,7 @@ export const Diary = () => {
       const newEnt = {
         text: descriptionTxt,
         startTime: newEntry.startTime,
+        endTime: newEntry.endTime,
         id: uuidv4(),
       };
       setEntries((prev) => [...prev, newEnt]);
