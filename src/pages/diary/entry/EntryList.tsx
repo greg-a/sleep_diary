@@ -1,6 +1,7 @@
 import DeleteIcon from "../../../assets/delete-svgrepo-com.svg";
 import { Table } from "../../../components/table/Table";
 import { deleteEntry } from "../../../db/entries";
+import { getDuration } from "../Diary";
 
 export interface Entry {
   startTime: Date;
@@ -50,10 +51,17 @@ export const EntryList = ({ entries, onDelete }: Props) => {
             entry.startTime.toLocaleString([], { dayPeriod: "long" }),
         },
         {
+          header: "Duration",
+          field: "duration",
+          body: (entry: Entry) => getDuration(entry.startTime, entry.endTime),
+        },
+        {
           header: "",
           field: "",
           body: (entry: Entry) => (
-            <button onClick={() => handleDelete(entry.id)}>Delete</button>
+            <button onClick={() => handleDelete(entry.id)}>
+              <img src={DeleteIcon} height={18} width={18} />
+            </button>
           ),
         },
       ]}

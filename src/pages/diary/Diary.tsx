@@ -37,7 +37,7 @@ function formatTime(d: Date) {
   return `${hour}:${minute}`;
 }
 
-const getDuration = (start: Date, end: Date | undefined) => {
+export const getDuration = (start: Date, end: Date | undefined) => {
   const durationStr = [];
   if (!end) {
     return "";
@@ -56,7 +56,7 @@ const getDuration = (start: Date, end: Date | undefined) => {
   if (minutes > 0) {
     durationStr.push(`${minutes} minutes`);
   }
-  return durationStr.join(" ");
+  return durationStr.length > 0 ? durationStr.join(" ") : "0 minutes";
 };
 
 export const Diary = () => {
@@ -97,11 +97,11 @@ export const Diary = () => {
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = new Date(e.target.value);
-    const newStart = newEntry.startTime;
+    const newStart = new Date(newEntry.startTime);
     newStart.setFullYear(newDate.getFullYear());
     newStart.setMonth(newDate.getMonth());
-    newStart.setDate(newDate.getDate());
-    const newEnd = newEntry.endTime ?? newEntry.startTime;
+    newStart.setDate(newDate.getDate() + 1);
+    const newEnd = new Date(newEntry.endTime ?? newEntry.startTime);
     newEnd.setFullYear(newDate.getFullYear());
     newEnd.setMonth(newDate.getMonth());
     newEnd.setDate(newDate.getDate() + 1);
