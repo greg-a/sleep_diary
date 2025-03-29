@@ -13,12 +13,12 @@ function uuidv4() {
   );
 }
 
-const getDefaultNewEntry = (date?: Date): Entry => {
-  const currentDatetime = date ?? new Date();
+const getDefaultNewEntry = (start?: Date, end?: Date): Entry => {
+  const startTime = start ?? new Date();
   return {
     text: "",
-    startTime: currentDatetime,
-    endTime: currentDatetime,
+    startTime,
+    endTime: end ?? startTime,
     id: "",
   };
 };
@@ -74,7 +74,7 @@ export const Diary = () => {
       };
       setEntries((prev) => [...prev, newEnt]);
       await addEntry(newEnt);
-      setNewEntry(getDefaultNewEntry(newEntry.startTime));
+      setNewEntry(getDefaultNewEntry(newEntry.startTime, newEntry.endTime));
     }
   };
 
@@ -82,7 +82,7 @@ export const Diary = () => {
     setNewEntry((prev) => ({ ...prev, text: e.target.value }));
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const key = e.target.id as "startTime" | "endTime";
     const newTime = new Date(newEntry[key] ?? newEntry.startTime);
     const [hours, minutes] = e.target.value.split(":");
@@ -93,6 +93,19 @@ export const Diary = () => {
       ...prev,
       [key]: newTime,
     }));
+  };
+
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = new Date(e.target.value);
+    const newStart = newEntry.startTime;
+    newStart.setFullYear(newDate.getFullYear());
+    newStart.setMonth(newDate.getMonth());
+    newStart.setDate(newDate.getDate());
+    const newEnd = newEntry.endTime ?? newEntry.startTime;
+    newEnd.setFullYear(newDate.getFullYear());
+    newEnd.setMonth(newDate.getMonth());
+    newEnd.setDate(newDate.getDate() + 1);
+    setNewEntry((prev) => ({ ...prev, startTime: newStart, endTime: newEnd }));
   };
 
   const handleDeleteEntry = (entryId: string) => {
@@ -114,6 +127,7 @@ export const Diary = () => {
           label="Date"
           type="date"
           value={formatDate(newEntry.startTime)}
+          onChange={handleDateChange}
         />
       </div>
       <div className="form-container">
@@ -129,14 +143,14 @@ export const Diary = () => {
           name="startTime"
           type="time"
           value={formatTime(newEntry.startTime)}
-          onChange={handleDateChange}
+          onChange={handleTimeChange}
         />
         <Input
           label="End Time"
           name="endTime"
           type="time"
           value={formatTime(newEntry.endTime ?? newEntry.startTime)}
-          onChange={handleDateChange}
+          onChange={handleTimeChange}
         />
         <Input
           label="Duration"

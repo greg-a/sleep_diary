@@ -14,6 +14,16 @@ interface Props {
   onDelete: (id: string) => void;
 }
 
+const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
 export const EntryList = ({ entries, onDelete }: Props) => {
   const handleDelete = async (entryId: string) => {
     const response = await deleteEntry(entryId);
@@ -28,6 +38,17 @@ export const EntryList = ({ entries, onDelete }: Props) => {
         { header: "Note", field: "text" },
         { header: "Start", field: "startTime" },
         { header: "End", field: "endTime" },
+        {
+          header: "Day",
+          field: "startTime",
+          body: (entry: Entry) => days[entry.startTime.getDay()],
+        },
+        {
+          header: "Period",
+          field: "startTime",
+          body: (entry: Entry) =>
+            entry.startTime.toLocaleString([], { dayPeriod: "long" }),
+        },
         {
           header: "",
           field: "",
