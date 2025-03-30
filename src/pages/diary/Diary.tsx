@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import "./diary.css";
-import { Input } from "../../components/input/input";
+import { Input, InputChangeEvent } from "../../components/input/input";
 import { Entry, EntryList } from "./entry/EntryList";
 import { addEntry, getAllEntries } from "../../db/entries";
+import { DateInput } from "../../components/input/DateInput/DateInput";
 
 function uuidv4() {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
@@ -23,7 +24,7 @@ const getDefaultNewEntry = (start?: Date, end?: Date): Entry => {
   };
 };
 
-function formatDate(d: Date) {
+export function formatDate(d: Date) {
   const date = new Date(d);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -95,8 +96,8 @@ export const Diary = () => {
     }));
   };
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = new Date(e.target.value);
+  const handleDateChange = (e: InputChangeEvent) => {
+    const newDate = e.value ? new Date(e.value) : new Date();
     const newStart = new Date(newEntry.startTime);
     newStart.setFullYear(newDate.getFullYear());
     newStart.setMonth(newDate.getMonth());
@@ -131,11 +132,10 @@ export const Diary = () => {
     <>
       <h1>Sleep Diary</h1>
       <div style={{ width: "fit-content" }}>
-        <Input
+        <DateInput
           label="Date"
-          type="date"
           value={formatDate(newEntry.startTime)}
-          onChange={handleDateChange}
+          onValueChange={handleDateChange}
         />
       </div>
       <div className="form-container">

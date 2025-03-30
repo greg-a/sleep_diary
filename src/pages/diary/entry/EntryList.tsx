@@ -41,12 +41,12 @@ export const EntryList = ({ entries, onDelete }: Props) => {
         { header: "End", field: "endTime" },
         {
           header: "Day",
-          field: "startTime",
+          field: "day",
           body: (entry: Entry) => days[entry.startTime.getDay()],
         },
         {
           header: "Period",
-          field: "startTime",
+          field: "period",
           body: (entry: Entry) =>
             entry.startTime.toLocaleString([], { dayPeriod: "long" }),
         },
