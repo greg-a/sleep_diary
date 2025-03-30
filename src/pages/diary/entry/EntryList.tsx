@@ -65,7 +65,18 @@ export const EntryList = ({ entries, onDelete }: Props) => {
           ),
         },
       ]}
-      data={entries}
+      data={entries.sort(function (a, b) {
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        const compareStart = a.startTime.getTime() - b.startTime.getTime();
+        if (compareStart === 0) {
+          return (
+            (a.endTime ?? a.startTime).getTime() -
+            (b.endTime ?? b.startTime).getTime()
+          );
+        }
+        return compareStart;
+      })}
     />
   );
 };

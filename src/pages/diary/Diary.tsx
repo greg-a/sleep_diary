@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./diary.css";
 import { Input } from "../../components/input/input";
 import { Entry, EntryList } from "./entry/EntryList";
@@ -112,6 +112,14 @@ export const Diary = () => {
     setEntries((prev) => prev.filter((e) => e.id !== entryId));
   };
 
+  const filteredEntries = useMemo(() => {
+    return entries.filter(
+      (entry) =>
+        entry.startTime.toLocaleDateString() ===
+        newEntry.startTime.toLocaleDateString()
+    );
+  }, [entries, newEntry.startTime]);
+
   useEffect(() => {
     (async () => {
       const entries = await getAllEntries();
@@ -158,7 +166,7 @@ export const Diary = () => {
           value={getDuration(newEntry.startTime, newEntry.endTime)}
         />
       </div>
-      <EntryList entries={entries} onDelete={handleDeleteEntry} />
+      <EntryList entries={filteredEntries} onDelete={handleDeleteEntry} />
     </>
   );
 };
