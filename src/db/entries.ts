@@ -55,6 +55,21 @@ export const addEntry = (data: Entry): Promise<Entry | string | null> => {
   });
 };
 
+export const updateEntry = (data: Entry): Promise<Entry | string | null> => {
+  return new Promise((resolve) => {
+    let db: IDBDatabase;
+    const request = indexedDB.open(dbName, version);
+    request.onsuccess = () => {
+      db = request.result;
+      const tx = db.transaction(Stores.Entries, "readwrite");
+      const store = tx.objectStore(Stores.Entries);
+      store.put(data);
+      db.close();
+      resolve(data);
+    };
+  });
+};
+
 export const getAllEntries = (): Promise<Entry[]> => {
   return new Promise((resolve) => {
     let db: IDBDatabase;
@@ -73,8 +88,6 @@ export const getAllEntries = (): Promise<Entry[]> => {
   });
 };
 
-
-
 export const deleteEntry = (key: string): Promise<boolean> => {
   return new Promise((resolve) => {
     // again open the connection
@@ -83,7 +96,7 @@ export const deleteEntry = (key: string): Promise<boolean> => {
 
     request.onsuccess = () => {
       db = request.result;
-      const tx = db.transaction(Stores.Entries, 'readwrite');
+      const tx = db.transaction(Stores.Entries, "readwrite");
       const store = tx.objectStore(Stores.Entries);
       const res = store.delete(key);
 
@@ -93,11 +106,8 @@ export const deleteEntry = (key: string): Promise<boolean> => {
       };
       res.onerror = () => {
         resolve(false);
-      }
+      };
       db.close();
     };
   });
 };
-
-
-

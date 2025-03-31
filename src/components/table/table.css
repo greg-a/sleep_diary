@@ -1,5 +1,6 @@
-table {
+.main-table {
   width: 100%;
+  white-space: nowrap;
 
   tbody {
     tr:hover td {
@@ -8,6 +9,10 @@ table {
     td {
       button {
         padding: 0.25rem 0.7rem;
+      }
+      input {
+        padding: 0;
+        font-size: medium;
       }
     }
   }

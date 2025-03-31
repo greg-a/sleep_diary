@@ -73,9 +73,11 @@ export const Diary = () => {
         endTime: newEntry.endTime,
         id: uuidv4(),
       };
-      setEntries((prev) => [...prev, newEnt]);
-      await addEntry(newEnt);
-      setNewEntry(getDefaultNewEntry(newEntry.startTime, newEntry.endTime));
+      const result = await addEntry(newEnt);
+      if (result) {
+        setEntries((prev) => [...prev, newEnt]);
+        setNewEntry(getDefaultNewEntry(newEntry.startTime, newEntry.endTime));
+      }
     }
   };
 
@@ -111,6 +113,17 @@ export const Diary = () => {
 
   const handleDeleteEntry = (entryId: string) => {
     setEntries((prev) => prev.filter((e) => e.id !== entryId));
+  };
+
+  const handleUpdateEntry = (entry: Entry) => {
+    const updatedEntries = entries.map((e) => {
+      if (e.id === entry.id) {
+        return entry;
+      } else {
+        return e;
+      }
+    });
+    setEntries(updatedEntries);
   };
 
   const filteredEntries = useMemo(() => {
@@ -166,7 +179,11 @@ export const Diary = () => {
           value={getDuration(newEntry.startTime, newEntry.endTime)}
         />
       </div>
-      <EntryList entries={filteredEntries} onDelete={handleDeleteEntry} />
+      <EntryList
+        entries={filteredEntries}
+        onDelete={handleDeleteEntry}
+        onUpdateEntry={handleUpdateEntry}
+      />
     </>
   );
 };

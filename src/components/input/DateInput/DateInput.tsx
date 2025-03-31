@@ -23,7 +23,6 @@ export const DateInput = ({
     onValueChange?.({ value: formatDate(newValue) });
   };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log({ e });
     onChange?.(e);
     onValueChange?.({ name: e.target.value, value: e.target.value });
   };
