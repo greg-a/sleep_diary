@@ -64,9 +64,10 @@ export const Diary = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
   const [newEntry, setNewEntry] = useState<Entry>(getDefaultNewEntry());
 
-  const submitEntry = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     const descriptionTxt = newEntry?.text.trim() ?? "";
-    if (e.key === "Enter" && descriptionTxt.length > 0) {
+    if (descriptionTxt.length > 0) {
       const newEnt = {
         text: descriptionTxt,
         startTime: newEntry.startTime,
@@ -151,33 +152,35 @@ export const Diary = () => {
           onValueChange={handleDateChange}
         />
       </div>
-      <div className="form-container">
-        <Input
-          label="Description"
-          onKeyDown={submitEntry}
-          onChange={handleDescription}
-          value={newEntry.text}
-          autoFocus
-        />
-        <Input
-          label="Start Time"
-          name="startTime"
-          type="time"
-          value={formatTime(newEntry.startTime)}
-          onChange={handleTimeChange}
-        />
-        <Input
-          label="End Time"
-          name="endTime"
-          type="time"
-          value={formatTime(newEntry.endTime ?? newEntry.startTime)}
-          onChange={handleTimeChange}
-        />
-        <Input
-          label="Duration"
-          readOnly
-          value={getDuration(newEntry.startTime, newEntry.endTime)}
-        />
+      <div>
+        <form className="form-container" onSubmit={handleSubmit}>
+          <Input
+            label="Description"
+            onChange={handleDescription}
+            value={newEntry.text}
+            autoFocus
+          />
+          <Input
+            label="Start Time"
+            name="startTime"
+            type="time"
+            value={formatTime(newEntry.startTime)}
+            onChange={handleTimeChange}
+          />
+          <Input
+            label="End Time"
+            name="endTime"
+            type="time"
+            value={formatTime(newEntry.endTime ?? newEntry.startTime)}
+            onChange={handleTimeChange}
+          />
+          <Input
+            label="Duration"
+            readOnly
+            value={getDuration(newEntry.startTime, newEntry.endTime)}
+          />
+          <button type="submit">Submit</button>
+        </form>
       </div>
       <EntryList
         entries={filteredEntries}
