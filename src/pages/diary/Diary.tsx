@@ -143,16 +143,16 @@ export const Diary = () => {
   }, []);
 
   return (
-    <>
-      <h1>Sleep Diary</h1>
-      <div style={{ width: "fit-content" }}>
+    <div className="diary-container">
+      <div>
+        <h1>Sleep Diary</h1>
         <DateInput
           label="Date"
           value={formatDate(newEntry.startTime)}
           onValueChange={handleDateChange}
         />
       </div>
-      <div>
+      <section>
         <form className="form-container" onSubmit={handleSubmit}>
           <Input
             label="Description"
@@ -181,12 +181,14 @@ export const Diary = () => {
           />
           <button type="submit">Submit</button>
         </form>
-      </div>
-      <EntryList
-        entries={filteredEntries}
-        onDelete={handleDeleteEntry}
-        onUpdateEntry={handleUpdateEntry}
-      />
-    </>
+      </section>
+      <section>
+        <EntryList
+          entries={filteredEntries}
+          onDelete={handleDeleteEntry}
+          onUpdateEntry={handleUpdateEntry}
+        />
+      </section>
+    </div>
   );
 };

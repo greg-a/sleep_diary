@@ -73,7 +73,7 @@ export const EntryList = ({ entries, onDelete, onUpdateEntry }: Props) => {
   };
 
   return (
-    <div style={{ overflowX: "auto" }}>
+    <div style={{ overflowX: "auto", width: "100%" }}>
       <Table
         onDelete={handleDelete}
         onEdit={handleEdit}
