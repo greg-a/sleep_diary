@@ -4,15 +4,7 @@ import { Input, InputChangeEvent } from "../../components/input/input";
 import { Entry, EntryList } from "./entry/EntryList";
 import { addEntry, getAllEntries } from "../../db/entries";
 import { DateInput } from "../../components/input/DateInput/DateInput";
-
-function uuidv4() {
-  return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, (c) =>
-    (
-      +c ^
-      (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (+c / 4)))
-    ).toString(16)
-  );
-}
+import { uuidv4 } from "../../util/util";
 
 const getDefaultNewEntry = (start?: Date, end?: Date): Entry => {
   const startTime = start ?? new Date();

@@ -70,6 +70,22 @@ export const updateEntry = (data: Entry): Promise<Entry | string | null> => {
   });
 };
 
+export const deleteAllEntries = () => {
+  return new Promise((resolve) => {
+    let db: IDBDatabase;
+    const request = indexedDB.open(dbName, version);
+    request.onsuccess = () => {
+      db = request.result;
+      const tx = db.transaction(Stores.Entries, "readwrite");
+      const store = tx.objectStore(Stores.Entries);
+      store.clear()
+      db.close();
+      console.log("All entries deleted")
+      resolve(true);
+    };
+  });
+}
+
 export const getAllEntries = (): Promise<Entry[]> => {
   return new Promise((resolve) => {
     let db: IDBDatabase;
