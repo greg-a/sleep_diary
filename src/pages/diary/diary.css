@@ -1,0 +1,25 @@
+.form-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.diary-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  place-items: center;
+  gap: 1rem;
+
+  h1 {
+    text-align: center;
+  }
+
+  section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: auto;
+  }
+}
